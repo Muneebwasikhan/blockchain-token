@@ -3,6 +3,8 @@ App = {
   contracts: {},
   account: '0x0',
   TokenPrice: 6389183492737200,
+  TokensSold: 0,
+  TokensAvailable: 555555,
   init: () => {
     console.log("Page loaded");
     App.initWeb3();
@@ -60,6 +62,21 @@ App = {
       App.TokenPrice = tokenPrice;
       document.getElementById("token-price").innerHTML = web3.fromWei(App.TokenPrice, "ether").toNumber();
       console.log(App.TokenPrice); 
+      return doroTokenInstance.tokensSold();
+    }).then((TokensSold) => {
+      App.TokensSold = TokensSold;
+      document.getElementById("tokens-sold").innerHTML = App.TokensSold.toNumber();
+      document.getElementById("tokens-available").innerHTML = App.TokensAvailable;
+      console.log(App.TokensSold); 
+
+
+      App.contracts.DoroToken.deployed().then((instance) => {
+        doroTokenInstance  = instance;
+        return doroTokenInstance.balanceOf(App.account);
+      }).then((balance) => {
+        document.getElementById("doro-balance").innerHTML = balance.toNumber();
+
+      })
     })
   }
 }
